@@ -37,6 +37,7 @@ playstyles = ["Full-Tank", "Attackspeed", "Full-AD", "Full-AP", "Crit", "Assassi
 
 strategies = ["Bis der nächste Tower fällt: ARAM", "Baron machen", "Drake machen", "Bis der nächste Tower fällt: Alle Top", "Bis der nächste Tower fällt: Alle Bot", "Bis der nächste Tower fällt: 1-3-1", "Alle trappen", "Bis der nächste Tower fällt: 0 Damage machen", "2 Minuten keinen Kill!", "2 Minuten keinen Farm nehmen!", "Harri in der Gegner-Base zünden", "Entenmarsch hinter Jungler, bis er stirbt!", "2 Waves Proxyfarmen",  "2 Minuten lang die Rollen nach unten hin rotieren (Top -> Jgl, Jgl -> Mid etc.)", "2 Minuten lang die Rollen nach oben hin rotieren (Top -> Sup, Jgl -> Top etc.)"]
 
+
 int_lines = ["REIN DA!", "Der Fahrstuhl kennt nur eine Richtung (Zwinkersmiley)", "Gib dem armen Jungen ein bisschen Gold", "Rein da, aber nur die rechte Hand benutzen!", "Rein da, aber nur die linke Hand benutzen!"]
 
 
