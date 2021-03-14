@@ -2,8 +2,17 @@ import discord
 import os
 from keep_alive import keep_alive
 import random
+import praw
 
 client = discord.Client()
+reddit = praw.Reddit(
+    client_id=os.getenv('ClientID'),
+    client_secret=os.getenv('ClientSecret'),
+    password=os.getenv('PW'),
+    user_agent="ESNbot",
+    username=os.getenv('User'),
+    check_for_async=False
+)
 
 champs = ["Aatrox", "Ahri", "Akali", "Alistar", "Amumu", "Anivia", "Annie", "Aphelios", "Ashe", "Aurelion Sol", "Azir", "Bard", "Blitzcrank", "Brand", "Braum", "Caitlyn", "Camille", "Cassiopeia", "Cho Gath", "Corki", "Darius", "Diana", "Dr Mundo", "Draven", "Ekko", "Elise", "Evelynn", "Ezreal", "Fiddlesticks", "Fiora", "Fizz", "Galio", "Gangplank", "Garen", "Gnar", "Gragas", "Graves", "Hecarim", "Heimerdinger", "Illaoi", "Irelia", "Ivern", "Janna", "Jarvan IV", "Jax", "Jayce", "Jhin", "Jinx", "Kai Sa", "Kalista", "Karma", "Karthus", "Kassadin", "Katarina", "Kayle", "Kayn", "Kennen", "Kha Zix", "Kindred", "Kled", "Kog Maw", "LeBlanc", "Lee Sin", "Leona", "Lissandra", "Lucian", "Lulu", "Lux", "Lillia", "Malphite", "Malzahar", "Maokai", "Master Yi", "Miss Fortune", "Mordekaiser", "Morgana", "Nami", "Nasus", "Nautilus", "Neeko", "Nidalee", "Nocturne", "Nunu und Willump", "Olaf", "Orianna", "Ornn", "Pantheon", "Poppy", "Pyke", "Qiyana", "Quinn", "Rakan", "Rammus", "Rek Sai", "Renekton","Rell", "Rengar", "Riven", "Rumble", "Ryze", "Samira", "Sejuani", "Seraphine", "Senna", "Sett", "Shaco", "Shen", "Shyvana", "Singed", "Sion", "Sivir", "Skarner", "Sona", "Soraka", "Swain", "Sylas", "Syndra", "Tahm Kench", "Taliyah", "Talon", "Taric", "Teemo", "Thresh","Tristana","Trundle", "Tryndamere", "Twisted Fate", "Twitch", "Udyr", "Urgot", "Varus", "Viego", "Vayne", "Veigar","Vel Koz", "Vi", "Viktor", "Vladimir", "Volibear", "Warwick", "Wukong","Xayah" ,"Xerath", "Xin Zhao", "Yasuo", "Yone", "Yorick", "Yuumi", "Zac", "Zed", "Ziggs", "Zilean", "Zoe", "Zyra"]
 
@@ -23,12 +32,12 @@ runes = ["Press the attack", "Lethal Tempo", "Fleet Footwork", "Conqueror", "Ele
 rune_trees = ["Precision", "Domination", "Sorcery", "Resolve", "Inspiration"]
 
 
-playstyles = ["Full-Tank", "Attackspeed", "Full-AD", "Full-AP", "Crit", "Assassin"]
+playstyles = ["Full-Tank", "Attackspeed", "Full-AD", "Full-AP", "Crit", "Assassin", "Movement Speed", "CDR", "Brawler", "Full-Mana", "On-Hit"]
 
 
 strategies = ["Bis der nächste Tower fällt: ARAM", "Baron machen", "Drake machen", "Bis der nächste Tower fällt: Alle Top", "Bis der nächste Tower fällt: Alle Bot", "Bis der nächste Tower fällt: 1-3-1", "Alle trappen", "Bis der nächste Tower fällt: 0 Damage machen", "2 Minuten keinen Kill!", "2 Minuten keinen Farm nehmen!", "Harri in der Gegner-Base zünden", "Entenmarsch hinter Jungler, bis er stirbt!", "2 Waves Proxyfarmen",  "2 Minuten lang die Rollen nach unten hin rotieren (Top -> Jgl, Jgl -> Mid etc.)", "2 Minuten lang die Rollen nach oben hin rotieren (Top -> Sup, Jgl -> Top etc.)"]
 
-int_lines = ["REIN DA!", "Der Fahrstuhl kennt nur eine Richtung (Zwinkersmiley)", "Gib dem armen Junger ein bisschen Gold", "Rein da, aber nur die rechte Hand benutzen!", "Rein da, aber nur die linke Hand benutzen!"]
+int_lines = ["REIN DA!", "Der Fahrstuhl kennt nur eine Richtung (Zwinkersmiley)", "Gib dem armen Jungen ein bisschen Gold", "Rein da, aber nur die rechte Hand benutzen!", "Rein da, aber nur die linke Hand benutzen!"]
 
 
 def get_team_wild():
@@ -76,6 +85,27 @@ def get_int():
     return random.choice(int_lines)
 
 
+def get_meme():
+  subs = ["ich_iel", "HistoryMemes", "me_irl", "altschauerberg", "TIHI", "redneckengineering", "okbrudimongo", "cursedimages", "BikiniBottomTwitter", "blursedimages"]
+  subreddit = reddit.subreddit(random.choice(subs))
+  submissions = []
+  submission_buffer = subreddit.hot(limit=25)
+  for submission in submission_buffer:
+    submissions.append(submission)
+  post = random.choice(submissions)
+  return post.title + "\n" + post.url
+
+
+def get_meme_sub(sub):
+  subreddit = reddit.subreddit(sub)
+  submissions = []
+  submission_buffer = subreddit.hot(limit=25)
+  for submission in submission_buffer:
+    submissions.append(submission)
+  post = random.choice(submissions)
+  return post.title + "\n" + post.url
+
+
 def get_csgo():
   strats = ["RUSH B СУКА", "ESN-Spezial auf A Lang", "Mitte runter", "A Short", "Lower Tunnel zu B", "Lower Tunnel zu Short", "Bombe opfern", "Erst aus dem Spawn, wenn ein Kill gefallen ist", "Nur schleichen", "Anfangen zu schießen -> Magazin muss leer", "Entenmarsch zu B"]
   waffen = ["Dual Berettas", "Negev", "Negev", "Negev", "AWP", "MP7", "Deagle", "AR", "Autosniper", "Zeus", "Messer", "Pistol only", "Ohne Granaten"]
@@ -83,7 +113,7 @@ def get_csgo():
 
 
 def get_help():
-  return "hola espanol?\n!csgo: Waffen/Strats für maximalen Int\n!int: Inten oder nicht?\n!champ: Random Champ\n!runes: Random Runen\n!team: Perfekt gedraftetes Team für LoL\n!team_wild: Die etwas würzigere Alternative\n!strategy: Geniale Wege, das Spiel zu drehen"
+  return "hola espanol?\n!csgo: Waffen/Strats für maximalen Int\n!int: Inten oder nicht?\n!champ: Random Champ\n!runes: Random Runen\n!items: Random Items\n!team: Perfekt gedraftetes Team für LoL\n!team_wild: Die etwas würzigere Alternative\n!strategy: Geniale Wege, das Spiel zu drehen\n!meme: Random aktuelles Meme von Reddit, besondere subs: !cursed !oger !ich_iel"
 
 
 def get_runes():
@@ -108,6 +138,7 @@ def get_runes():
 @client.event
 async def on_ready():
   print('logged in as {0.user}'.format(client))
+  await client.change_presence(activity=discord.Activity(type=discord.ActivityType.listening, name='ESNhelp'))
 
 @client.event
 async def on_message(message):
@@ -126,6 +157,8 @@ async def on_message(message):
     await message.channel.send(get_champ())
   elif message.content.startswith('!int'):
     await message.channel.send(get_int())
+  elif message.content.startswith('!items'):
+    await message.channel.send(get_items(6))
   elif message.content.startswith('!csgo'):
     await message.channel.send(get_csgo())
   elif message.content.startswith('ESNhelp'):
@@ -134,7 +167,14 @@ async def on_message(message):
     await message.channel.send(get_items(6))
   elif message.content.startswith('!strategy'):
     await message.channel.send(get_strategy())
+  elif message.content.startswith('!meme'):
+    await message.channel.send(get_meme())
+  elif message.content.startswith('!cursed'):
+    await message.channel.send(get_meme_sub("cursedimages"))
+  elif message.content.startswith('!oger'):
+    await message.channel.send(get_meme_sub("altschauerberg"))
+  elif message.content.startswith('!ich_iel'):
+    await message.channel.send(get_meme_sub("ich_iel"))
 
 keep_alive()
 client.run(os.getenv('TOKEN'))
-client.user.setActivity("ESNhelp");
