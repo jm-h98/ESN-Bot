@@ -37,14 +37,13 @@ playstyles = ["Full-Tank", "Attackspeed", "Full-AD", "Full-AP", "Crit", "Assassi
 
 strategies = ["Bis der nächste Tower fällt: ARAM", "Baron machen", "Drake machen", "Bis der nächste Tower fällt: Alle Top", "Bis der nächste Tower fällt: Alle Bot", "Bis der nächste Tower fällt: 1-3-1", "Alle trappen", "Bis der nächste Tower fällt: 0 Damage machen", "2 Minuten keinen Kill!", "2 Minuten keinen Farm nehmen!", "Harri in der Gegner-Base zünden", "Entenmarsch hinter Jungler, bis er stirbt!", "2 Waves Proxyfarmen",  "2 Minuten lang die Rollen nach unten hin rotieren (Top -> Jgl, Jgl -> Mid etc.)", "2 Minuten lang die Rollen nach oben hin rotieren (Top -> Sup, Jgl -> Top etc.)"]
 
-
 int_lines = ["REIN DA!", "Der Fahrstuhl kennt nur eine Richtung (Zwinkersmiley)", "Gib dem armen Jungen ein bisschen Gold", "Rein da, aber nur die rechte Hand benutzen!", "Rein da, aber nur die linke Hand benutzen!"]
 
 
 def get_team_wild():
   rand = random.sample(range(1, len(champs)), 5)
   top = "TOPLANE\nChamp: {0}\n{1}Items: {2}\n\n".format(champs[rand[0]], get_runes(), get_items(6))
-  jungle = "JUNGLE\nChamp: {0}\n{1}Items: Jungle-Item, {2}\n\n".format(champs[rand[1]], get_runes(), get_items(5))
+  jungle = "JUNGLE\nChamp: {0}\n{1}Items: {2}\n\n".format(champs[rand[1]], get_runes(), get_items(6))
   mid = "MIDLANE\nChamp: {0}\n{1}Items: {2}\n\n".format(champs[rand[2]], get_runes(), get_items(6))
   bot = "BOTLANE\nChamp: {0}\n{1}Items: {2}\n\n".format(champs[rand[3]], get_runes(), get_items(6))
   sup = "SUPPORT\nChamp: {0}\n{1}Items: Support-Item, {2}\n\n".format(champs[rand[4]], get_runes(), get_items(5))
@@ -70,6 +69,10 @@ def get_items(i):
   return items + " + " + shoe
 
 
+def get_jocho():
+  rand = random.randint(0,len(champs)-1)
+  return "Champ: {0}\n{1}Items: {2}\n\n".format(champs[rand], get_runes(), get_items(6))
+
 def get_champ():
   return random.choice(champs)
 
@@ -87,7 +90,7 @@ def get_int():
 
 
 def get_meme():
-  subs = ["ich_iel", "HistoryMemes", "me_irl", "altschauerberg", "TIHI", "redneckengineering", "okbrudimongo", "cursedimages", "BikiniBottomTwitter", "blursedimages"]
+  subs = ["ich_iel", "HistoryMemes", "me_irl", "altschauerberg", "TIHI", "redneckengineering", "okbrudimongo","okbuddyretard", "cursedimages", "BikiniBottomTwitter", "blursedimages", "mauerstrassenwetten"]
   subreddit = reddit.subreddit(random.choice(subs))
   submissions = []
   submission_buffer = subreddit.hot(limit=25)
@@ -98,7 +101,7 @@ def get_meme():
 
 
 def get_meme_sub(sub):
-  subreddit = reddit.subreddit(sub)
+  subreddit = reddit.subreddit(random.choice(sub))
   submissions = []
   submission_buffer = subreddit.hot(limit=25)
   for submission in submission_buffer:
@@ -114,11 +117,14 @@ def get_csgo():
 
 
 def get_help():
-  return "hola espanol?\n!csgo: Waffen/Strats für maximalen Int\n!int: Inten oder nicht?\n!champ: Random Champ\n!runes: Random Runen\n!items: Random Items\n!team: Perfekt gedraftetes Team für LoL\n!team_wild: Die etwas würzigere Alternative\n!strategy: Geniale Wege, das Spiel zu drehen\n!meme: Random aktuelles Meme von Reddit, besondere subs: !cursed !oger !ich_iel"
+  return "hola espanol?\n!csgo: Waffen/Strats für maximalen Int\n!int: Inten oder nicht?\n!champ: Random Champ\n!runes: Random Runen\n!items: Random Items\n!team: Perfekt gedraftetes Team für LoL\n!team_wild: Die etwas würzigere Alternative\n!jocho: random champ+runen+items\n!strategy: Geniale Wege, das Spiel zu drehen\n!meme: Random aktuelles Meme von Reddit, besondere subs: !cursed !oger !ich_iel !ok !history !prog !crypto"
 
 
 def get_runes():
-  rune = runes[random.randint(0, len(runes)-1)]
+  rand = random.randint(0, len(runes)+5)
+  if rand >= len(runes)-1:
+    rand = 6
+  rune = runes[rand]
 
   b = False
   while not b:
@@ -171,11 +177,21 @@ async def on_message(message):
   elif message.content.startswith('!meme'):
     await message.channel.send(get_meme())
   elif message.content.startswith('!cursed'):
-    await message.channel.send(get_meme_sub("cursedimages"))
+    await message.channel.send(get_meme_sub(["cursedimages", "blursedimages"]))
   elif message.content.startswith('!oger'):
-    await message.channel.send(get_meme_sub("altschauerberg"))
+    await message.channel.send(get_meme_sub(["altschauerberg"]))
   elif message.content.startswith('!ich_iel'):
-    await message.channel.send(get_meme_sub("ich_iel"))
+    await message.channel.send(get_meme_sub(["ich_iel"]))
+  elif message.content.startswith('!jocho'):
+    await message.channel.send(get_jocho())
+  elif message.content.startswith('!ok'):
+    await message.channel.send(get_meme_sub(["okbrudimongo","okbuddyretard"]))
+  elif message.content.startswith('!history'):
+    await message.channel.send(get_meme_sub(["historymemes"]))
+  elif message.content.startswith('!prog'):
+    await message.channel.send(get_meme_sub(["programmerhumor"]))
+  elif message.content.startswith('!crypto'):
+    await message.channel.send(get_meme_sub(["wallstreetbets", "mauerstrassenwetten", "dogecoin"]))
 
 keep_alive()
 client.run(os.getenv('TOKEN'))
