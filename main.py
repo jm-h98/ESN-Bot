@@ -4,8 +4,6 @@ from keep_alive import keep_alive
 from reddit_func import get_meme, get_meme_sub
 import chat_func
 from lol import stats, get_most_played
-import traceback
-import logging
 
 client = discord.Client()
 
@@ -88,6 +86,7 @@ async def on_message(message):
     for arg in message.content.split():
       if not arg.startswith('!stats'):
         summoner = summoner + arg
+    
     try:
       await message.channel.send(stats(summoner))
     except Exception as e:
