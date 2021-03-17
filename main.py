@@ -3,8 +3,9 @@ import os
 from keep_alive import keep_alive
 from reddit_func import get_meme, get_meme_sub
 import chat_func
-import random
-from lol import test, get_most_played
+from lol import stats, get_most_played
+import traceback
+import logging
 
 client = discord.Client()
 
@@ -41,7 +42,7 @@ async def on_message(message):
   elif message.content.startswith('!csgo'):
     await message.channel.send(chat_func.get_csgo())
   elif message.content.startswith('ESNhelp'):
-    await message.channel.send(chat_func.get_help())
+    await message.channel.send(get_help())
   elif message.content.startswith('!items'):
     await message.channel.send(chat_func.get_items(6))
   elif message.content.startswith('!strategy'):
@@ -63,8 +64,10 @@ async def on_message(message):
     for sub in message.content.split():
       if not sub.startswith('!'):
         subs.append(sub)
-    print(subs)
-    await message.channel.send(get_meme_sub(subs))
+    try:
+      await message.channel.send(get_meme_sub(subs))
+    except:
+      await message.channel.send("Der sub " + str(subs) + " existiert nicht lmao")
   elif message.content.startswith('!history'):
     await message.channel.send(get_meme_sub(["historymemes"]))
   elif message.content.startswith('!prog'):
@@ -76,10 +79,19 @@ async def on_message(message):
     for arg in message.content.split():
       if not arg.startswith('!ban'):
         summoner = summoner + arg
-    await message.channel.send(get_most_played(summoner))
-  elif message.content.startswith('!lol'):
-    await message.channel.send(test('ESN UMALPH JAN'))
-
+    try:
+      await message.channel.send(get_most_played(summoner))
+    except Exception as e:
+      await message.channel.send("Da ist wohl was schief gelaufen wie ein betrunkener Fußgänger!\n" + "[ERROR] " + str(e))
+  elif message.content.startswith('!stats'):
+    summoner = ""
+    for arg in message.content.split():
+      if not arg.startswith('!stats'):
+        summoner = summoner + arg
+    try:
+      await message.channel.send(stats(summoner))
+    except Exception as e:
+      await message.channel.send("Da ist wohl was schief gelaufen wie ein betrunkener Fußgänger!\n" + "[ERROR] " + str(e))
 
 keep_alive()
 client.run(os.getenv('TOKEN'))
