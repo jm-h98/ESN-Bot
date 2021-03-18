@@ -3,13 +3,13 @@ import os
 from keep_alive import keep_alive
 from reddit_func import get_meme, get_meme_sub
 import chat_func
-from lol import stats, get_most_played
+from lol import stats
 
 client = discord.Client()
 
 
 def get_help():
-  return "hola espanol?\n!csgo: Waffen/Strats für maximalen Int\n!int: Inten oder nicht?\n!champ: Random Champ\n!runes: Random Runen\n!items: Random Items\n!team: Perfekt gedraftetes Team für LoL\n!team_wild: Die etwas würzigere Alternative\n!jocho: random champ+runen+items\n!strategy: Geniale Wege, das Spiel zu drehen\n!meme: Random aktuelles Meme von Reddit, besondere subs: !cursed !oger !ich_iel !ok !history !prog !crypto\n!sub x y z ...: Random Top-Post aus einem der angegebenen Subreddits\n!ban x: Zeigt Champions mit Mastery > 6 des angegebenen Summoners, kann unter Umständen ordentlich dauern"
+  return "hola espanol?\n!csgo: Waffen/Strats für maximalen Int\n!int: Inten oder nicht?\n!champ: Random Champ\n!runes: Random Runen\n!items: Random Items\n!team: Perfekt gedraftetes Team für LoL\n!team_wild: Die etwas würzigere Alternative\n!jocho: random champ+runen+items\n!strategy: Geniale Wege, das Spiel zu drehen\n!meme: Random aktuelles Meme von Reddit, besondere subs: !cursed !oger !ich_iel !ok !history !prog !crypto\n!sub x y z ...: Random Top-Post aus einem der angegebenen Subreddits\n!best x: Zeigt die 5 aktuell besten Champs eines Summoners mit Score, der sich aus Mastery, KDA und Pickrate der letzten 20 Spiele berechnet\n!stats x: Zeigt dasselbe wie !best, nur ausführlicher"
 
 
 @client.event
@@ -72,19 +72,19 @@ async def on_message(message):
     await message.channel.send(get_meme_sub(["programmerhumor"]))
   elif message.content.startswith('!crypto'):
     await message.channel.send(get_meme_sub(["wallstreetbets", "mauerstrassenwetten", "dogecoin"]))
-  elif message.content.startswith('!ban'):
-    summoner = ""
-    for arg in message.content.split():
-      if not arg.startswith('!ban'):
-        summoner = summoner + arg
-    try:
-      await message.channel.send(get_most_played(summoner))
-    except Exception as e:
-      await message.channel.send("Da ist wohl was schief gelaufen wie ein betrunkener Fußgänger!\n" + "[ERROR] " + str(e))
   elif message.content.startswith('!stats'):
     summoner = ""
     for arg in message.content.split():
       if not arg.startswith('!stats'):
+        summoner = summoner + arg
+    try:
+      await message.channel.send(stats(summoner, True))
+    except Exception as e:
+      await message.channel.send("Da ist wohl was schief gelaufen wie ein betrunkener Fußgänger!\n" + "[ERROR] " + str(e))
+  elif message.content.startswith('!best'):
+    summoner = ""
+    for arg in message.content.split():
+      if not arg.startswith('!best'):
         summoner = summoner + arg
     
     try:
