@@ -12,7 +12,7 @@ reddit = praw.Reddit(
 )
 
 def get_meme():
-  subs = ["ich_iel", "HistoryMemes", "me_irl", "altschauerberg", "TIHI", "redneckengineering", "okbrudimongo","okbuddyretard", "cursedimages", "BikiniBottomTwitter", "blursedimages", "mauerstrassenwetten"]
+  subs = ["ich_iel", "HistoryMemes", "me_irl", "MettzgereiWinkler", "TIHI", "redneckengineering", "okbrudimongo","okbuddyretard", "cursedimages", "BikiniBottomTwitter", "blursedimages", "mauerstrassenwetten"]
   subreddit = reddit.subreddit(random.choice(subs))
   submissions = []
   submission_buffer = subreddit.hot(limit=25)
