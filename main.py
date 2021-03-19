@@ -71,7 +71,7 @@ async def on_message(message):
   elif message.content.startswith('!cursed'):
     await message.channel.send(get_meme_sub(["cursedimages", "blursedimages"]))
   elif message.content.startswith('!oger'):
-    await message.channel.send(get_meme_sub(["altschauerberg"]))
+    await message.channel.send(get_meme_sub(["MettzgereiWinkler"]))
   elif message.content.startswith('!ich_iel'):
     await message.channel.send(get_meme_sub(["ich_iel"]))
   elif message.content.startswith('!jocho'):
