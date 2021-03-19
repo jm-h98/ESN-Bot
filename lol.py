@@ -17,7 +17,7 @@ def get_masteries(name):
     return pd.DataFrame(stats)
 
 
-def get_recently_played(name, masteries, count=100):
+def get_recently_played(name, count=100):
 
     me = watcher.summoner.by_name(my_region, name)
 
@@ -25,40 +25,32 @@ def get_recently_played(name, masteries, count=100):
 
     last_matches = my_matches['matches'][0:count]
 
-    champs = []
-    for row in last_matches:
-        if row['queue'] != 450 and row['queue'] != 700:
-            champs_row = {'champID': row['champion'], 'mastery': masteries.loc[masteries['champID'] == row['champion']].iloc[0,1]}
-            champs.append(champs_row)
-
-    df = pd.DataFrame(champs)
+    stats = []
+    for i in range(0, len(last_matches)):
+        if last_matches[i]['queue'] != 450 and last_matches[i]['queue'] != 700:
+            match_detail = watcher.match.by_id(my_region, last_matches[i]['gameId'])
+            champ = last_matches[i]['champion']
+            for row in match_detail['participants']:
+                if row['championId'] == champ:
+                    deaths = row['stats']['deaths']
+                    if deaths == 0:
+                        deaths = 1
+                    if row['stats']['win']:
+                        stats_row = {'champID': champ, 'win': 1, 'KDA': (row['stats']['kills'] + row['stats']['assists']) / deaths}
+                    else:
+                        stats_row = {'champID': champ, 'win': 0, 'KDA': (row['stats']['kills'] + row['stats']['assists']) / deaths}
+                    stats.append(stats_row)
+                    break
+    df = pd.DataFrame(stats)
     games = len(df)
-    df['win'] = 0.0
-    df['KDA'] = 0.0
-
-    for i in range(0, len(df)):
-        # try:
-        match_detail = watcher.match.by_id(my_region, last_matches[i]['gameId'])
-        champ = df.iloc[i, 0]
-        for row in match_detail['participants']:
-            if row['championId'] == champ:
-                if row['stats']['win']:
-                    df.at[i, 'win'] = "1"
-                else:
-                    df.at[i, 'win'] = "0"
-                deaths = row['stats']['deaths']
-                if deaths == 0:
-                    deaths = 1
-                kda = (row['stats']['kills'] + row['stats']['assists']) / deaths
-                df.at[i, 'KDA'] = float(kda)
 
     df['frequency'] = df['champID'].map(df['champID'].value_counts() / games)
     df = df.groupby('champID', as_index=False).mean()
     col_list = list(df)
     col_list.remove('champID')
-    col_list.remove('win')
-    df['mastery'] = df['mastery'].apply(lambda x: x * 0.01)
+    df['win'] = df['win'].apply(lambda x: x + 0.1) # um *0 auszuschließen
     df['score'] = df[col_list].prod(axis=1)
+    df['score'] = df['score'].apply(lambda x: x * 100)
 
     latest = watcher.data_dragon.versions_for_region(my_region)['n']['champion']
     static_champ_list = watcher.data_dragon.champions(latest, False, 'en_US')
@@ -76,7 +68,7 @@ def get_recently_played(name, masteries, count=100):
     return df
 
 
-def stats(name, long=False):
+def stats(name):
     me = watcher.summoner.by_name(my_region, name)
     output = me['name'] + ", Level " + str(me['summonerLevel']) + "\n"
 
@@ -90,13 +82,10 @@ def stats(name, long=False):
             qtype = "FlexQ"
         output = output + qtype + ": " + q['tier'] + " " + q['rank'] + "\n"
 
-    scores = get_recently_played(name, get_masteries(name), 20)
+    scores = get_recently_played(name, 20)
     scores = scores.head(5)
 
-    if long:
-      output = output + str(scores)
-    else:
-      for i in range(0, len(scores)):
-        output = output + '{:<20s} {:<20s}'.format(scores.iloc[i, 6], str(round(scores.iloc[i, 5], 2))) + "\n"
+    for i in range(0, len(scores)):
+        output = output + '{:<20s} {:<20s}'.format(scores.iloc[i, 5], str(round(scores.iloc[i, 4], 2))) + "\n"
 
     return output
