@@ -7,7 +7,7 @@ from lol import stats
 
 client = discord.Client()
 
-known_summoners = ['Nina von Toggo', 'BACK0', 'Paddy von Toggo', 'ESN UMALPH JAN', 'UWU Animegirl69', 'crrna', 'Pucinant', 'Títtíes', 'bieselmfbutzi']
+known_summoners = []
 
 
 def get_help():
